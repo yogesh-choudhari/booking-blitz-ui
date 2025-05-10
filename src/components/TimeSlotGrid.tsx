@@ -1,7 +1,8 @@
 
 import React from 'react';
 import { TimeSlot } from '@/types/calendar';
-import { parseISO, format } from 'date-fns';
+import { format } from 'date-fns';
+import { Clock } from 'lucide-react';
 
 interface TimeSlotGridProps {
   availableSlots: TimeSlot[];
@@ -16,17 +17,19 @@ const TimeSlotGrid: React.FC<TimeSlotGridProps> = ({
 }) => {
   if (isLoading) {
     return (
-      <div className="py-8 flex justify-center">
-        <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500"></div>
+      <div className="py-12 flex flex-col items-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-primary mb-4"></div>
+        <p className="text-sm text-gray-500">Loading available times...</p>
       </div>
     );
   }
 
   if (availableSlots.length === 0) {
     return (
-      <div className="text-center py-8">
-        <p className="text-gray-500">No availability on this date.</p>
-        <p className="text-gray-500 text-sm mt-2">Please select another date.</p>
+      <div className="text-center py-12 bg-gray-50 rounded-lg">
+        <Clock className="h-12 w-12 text-gray-400 mx-auto mb-3" />
+        <p className="text-gray-600 font-medium mb-2">No availability on this date</p>
+        <p className="text-gray-500 text-sm">Please select another date or check back later.</p>
       </div>
     );
   }
@@ -42,15 +45,15 @@ const TimeSlotGrid: React.FC<TimeSlotGridProps> = ({
 
   return (
     <div>
-      <h2 className="text-lg font-semibold mb-4">Available Times</h2>
-      <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+      <h2 className="text-lg font-semibold mb-4 text-gray-800">Available times</h2>
+      <div className="grid grid-cols-3 md:grid-cols-4 gap-3">
         {availableSlots.map((slot) => (
           <button
             key={slot.start}
             onClick={() => onSelectTimeSlot(slot)}
-            className="p-3 border border-gray-200 rounded-md hover:border-blue-300 hover:bg-blue-50 hover:scale-105 transition-all text-center"
+            className="py-4 px-2 border border-gray-200 bg-white rounded-md hover:border-primary hover:bg-primary/5 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-1 transition-all text-center"
           >
-            {formatTimeDisplay(slot.time)}
+            <span className="font-medium text-gray-800">{formatTimeDisplay(slot.time)}</span>
           </button>
         ))}
       </div>

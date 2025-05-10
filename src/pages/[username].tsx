@@ -113,9 +113,9 @@ const UserCalendarPage: React.FC = () => {
 
   if (!username) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
         <div className="text-center">
-          <h1 className="text-2xl font-bold mb-2">User not found</h1>
+          <h1 className="text-2xl font-bold mb-2 text-gray-800">User not found</h1>
           <p className="text-gray-500">Please check the URL and try again.</p>
         </div>
       </div>
@@ -123,11 +123,11 @@ const UserCalendarPage: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="container mx-auto max-w-3xl px-4 py-8">
-        {/* Header area with error display */}
+    <div className="min-h-screen bg-white">
+      <div className="container mx-auto max-w-2xl px-4 py-16">
+        {/* Error display */}
         {error ? (
-          <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded mb-6">
+          <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-6">
             {error}
           </div>
         ) : null}
@@ -141,7 +141,7 @@ const UserCalendarPage: React.FC = () => {
         )}
         
         {/* Main content area */}
-        <div className="bg-white rounded-lg shadow-sm p-6">
+        <div className="bg-white rounded-xl">
           {/* Date selector */}
           <DateSelector 
             selectedDate={selectedDate} 

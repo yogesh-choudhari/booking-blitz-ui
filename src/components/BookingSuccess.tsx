@@ -1,9 +1,10 @@
 
 import React from 'react';
 import { Booking } from '@/types/calendar';
-import { Dialog } from '@/components/ui/dialog';
+import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { format } from 'date-fns';
+import { Calendar, CheckCircle, Clock, Video } from 'lucide-react';
 
 interface BookingSuccessProps {
   isOpen: boolean;
@@ -24,55 +25,65 @@ const BookingSuccess: React.FC<BookingSuccessProps> = ({ isOpen, onClose, bookin
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-        <div className="bg-white rounded-lg p-6 w-full max-w-md mx-4 text-center">
-          <div className="w-16 h-16 rounded-full bg-green-100 mx-auto mb-4 flex items-center justify-center">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-            </svg>
+      <DialogContent className="sm:max-w-md">
+        <div className="flex flex-col items-center text-center space-y-5 py-4">
+          <div className="rounded-full bg-green-100 p-3">
+            <CheckCircle className="h-8 w-8 text-green-600" />
           </div>
           
-          <h2 className="text-xl font-bold mb-2">Booking Confirmed!</h2>
-          <p className="text-gray-600 mb-6">Your meeting has been successfully scheduled.</p>
+          <div>
+            <h2 className="text-xl font-semibold text-gray-800">Booking confirmed</h2>
+            <p className="text-sm text-gray-500 mt-1">You're all set! The meeting has been added to your calendar.</p>
+          </div>
           
-          <div className="mb-6 p-4 bg-gray-50 rounded-md text-left">
-            <div className="mb-3">
-              <div className="text-sm text-gray-500">Date & Time</div>
-              <div className="font-medium">
-                {format(new Date(booking.date), 'EEEE, MMMM d, yyyy')}
-              </div>
-              <div className="font-medium">
-                {formatTime(booking.start_time)} ({booking.duration} minutes)
+          <div className="w-full bg-gray-50 rounded-lg p-4 space-y-4">
+            <div className="flex items-start">
+              <Calendar className="h-5 w-5 text-gray-600 mt-0.5 mr-3" />
+              <div className="text-left">
+                <p className="text-sm text-gray-500">Date</p>
+                <p className="font-medium text-gray-800">
+                  {format(new Date(booking.date), 'EEEE, MMMM d, yyyy')}
+                </p>
               </div>
             </div>
             
-            <div className="mb-3">
-              <div className="text-sm text-gray-500">Meeting Platform</div>
-              <div className="font-medium capitalize">{booking.platform}</div>
+            <div className="flex items-start">
+              <Clock className="h-5 w-5 text-gray-600 mt-0.5 mr-3" />
+              <div className="text-left">
+                <p className="text-sm text-gray-500">Time</p>
+                <p className="font-medium text-gray-800">
+                  {formatTime(booking.start_time)} ({booking.duration} minutes)
+                </p>
+              </div>
             </div>
             
-            {booking.meeting_link && (
-              <div>
-                <div className="text-sm text-gray-500">Meeting Link</div>
-                <a 
-                  href={booking.meeting_link} 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="text-blue-600 hover:underline font-medium break-all"
-                >
-                  {booking.meeting_link}
-                </a>
+            <div className="flex items-start">
+              <Video className="h-5 w-5 text-gray-600 mt-0.5 mr-3" />
+              <div className="text-left">
+                <p className="text-sm text-gray-500">Meeting Platform</p>
+                <p className="font-medium text-gray-800 capitalize">{booking.platform}</p>
+                
+                {booking.meeting_link && (
+                  <a 
+                    href={booking.meeting_link} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="text-primary hover:underline text-sm mt-1 inline-block"
+                  >
+                    Join {booking.platform} meeting
+                  </a>
+                )}
               </div>
-            )}
+            </div>
           </div>
           
-          <div className="flex justify-center">
-            <Button onClick={onClose}>
-              Close
+          <div className="w-full pt-4">
+            <Button onClick={onClose} className="w-full">
+              Done
             </Button>
           </div>
         </div>
-      </div>
+      </DialogContent>
     </Dialog>
   );
 };

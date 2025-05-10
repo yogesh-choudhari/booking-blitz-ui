@@ -3,8 +3,17 @@ import React from 'react';
 import { useForm } from 'react-hook-form';
 import { TimeSlot, BookingFormInputs } from '@/types/calendar';
 import { format } from 'date-fns';
-import { Dialog } from '@/components/ui/dialog';
+import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
+import { Calendar, Clock } from 'lucide-react';
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form';
 
 interface BookingModalProps {
   isOpen: boolean;
@@ -39,31 +48,47 @@ const BookingModal: React.FC<BookingModalProps> = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-        <div className="bg-white rounded-lg p-6 w-full max-w-md mx-4">
-          <h2 className="text-xl font-bold mb-4">Complete your booking</h2>
+      <DialogContent className="sm:max-w-md">
+        <div className="space-y-6">
+          <div>
+            <h2 className="text-xl font-semibold text-gray-800">Complete your booking</h2>
+            <p className="text-sm text-gray-500 mt-1">Enter your details to confirm the appointment.</p>
+          </div>
           
-          <div className="mb-6 p-3 bg-gray-50 rounded-md">
-            <div className="text-sm text-gray-500">Selected time</div>
-            <div className="font-medium">
-              {format(new Date(selectedSlot.date), 'EEEE, MMMM d, yyyy')}
+          <div className="bg-gray-50 p-4 rounded-lg space-y-2">
+            <div className="flex items-start">
+              <Calendar className="h-5 w-5 text-gray-600 mt-0.5 mr-3" />
+              <div>
+                <p className="text-sm text-gray-500">Date</p>
+                <p className="font-medium text-gray-800">
+                  {format(new Date(selectedSlot.date), 'EEEE, MMMM d, yyyy')}
+                </p>
+              </div>
             </div>
-            <div className="font-medium">
-              {formatTime(selectedSlot.time)} ({selectedSlot.duration} minutes)
+            
+            <div className="flex items-start">
+              <Clock className="h-5 w-5 text-gray-600 mt-0.5 mr-3" />
+              <div>
+                <p className="text-sm text-gray-500">Time</p>
+                <p className="font-medium text-gray-800">
+                  {formatTime(selectedSlot.time)} ({selectedSlot.duration} minutes)
+                </p>
+              </div>
             </div>
           </div>
           
-          <form onSubmit={handleSubmit(onSubmit)}>
-            <div className="mb-4">
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+            <div>
               <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
                 Your Name *
               </label>
               <input
                 id="name"
                 type="text"
-                className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary ${
                   errors.name ? 'border-red-500' : 'border-gray-300'
                 }`}
+                placeholder="John Doe"
                 {...register('name', { required: 'Name is required' })}
               />
               {errors.name && (
@@ -71,16 +96,17 @@ const BookingModal: React.FC<BookingModalProps> = ({
               )}
             </div>
             
-            <div className="mb-4">
+            <div>
               <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
                 Email Address *
               </label>
               <input
                 id="email"
                 type="email"
-                className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary ${
                   errors.email ? 'border-red-500' : 'border-gray-300'
                 }`}
+                placeholder="john@example.com"
                 {...register('email', { 
                   required: 'Email is required',
                   pattern: {
@@ -94,44 +120,47 @@ const BookingModal: React.FC<BookingModalProps> = ({
               )}
             </div>
             
-            <div className="mb-6">
+            <div>
               <label htmlFor="notes" className="block text-sm font-medium text-gray-700 mb-1">
-                Notes (Optional)
+                Additional Notes (Optional)
               </label>
               <textarea
                 id="notes"
                 rows={3}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary resize-none"
+                placeholder="Share anything that will help prepare for our meeting..."
                 {...register('notes')}
               ></textarea>
             </div>
             
-            <div className="flex justify-end space-x-3">
+            <div className="flex justify-end space-x-3 pt-2">
               <Button
                 type="button"
                 variant="outline"
                 onClick={onClose}
                 disabled={isSubmitting}
+                className="border-gray-300"
               >
                 Cancel
               </Button>
               <Button 
                 type="submit"
                 disabled={isSubmitting}
+                className="min-w-[120px]"
               >
                 {isSubmitting ? (
                   <>
-                    <span className="mr-2">Booking...</span>
+                    <span className="mr-2">Booking</span>
                     <div className="h-4 w-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
                   </>
                 ) : (
-                  'Confirm Booking'
+                  'Confirm'
                 )}
               </Button>
             </div>
           </form>
         </div>
-      </div>
+      </DialogContent>
     </Dialog>
   );
 };
