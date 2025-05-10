@@ -123,8 +123,8 @@ const UserCalendarPage: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-white">
-      <div className="container mx-auto max-w-2xl px-4 py-16">
+    <div className="min-h-screen bg-gray-50">
+      <div className="container mx-auto max-w-3xl px-4 py-12">
         {/* Error display */}
         {error ? (
           <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-6">
@@ -132,28 +132,32 @@ const UserCalendarPage: React.FC = () => {
           </div>
         ) : null}
         
-        {/* Profile header */}
-        {availabilityData && (
-          <UserHeader 
-            user={availabilityData.data.user} 
-            timezone={availabilityData.data.timezone} 
-          />
-        )}
-        
-        {/* Main content area */}
-        <div className="bg-white rounded-xl">
-          {/* Date selector */}
-          <DateSelector 
-            selectedDate={selectedDate} 
-            onDateChange={handleDateChange} 
-          />
+        {/* Main content area with card-like design */}
+        <div className="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-200">
+          <div className="p-8 border-b border-gray-100">
+            {/* Profile header */}
+            {availabilityData && (
+              <UserHeader 
+                user={availabilityData.data.user} 
+                timezone={availabilityData.data.timezone} 
+              />
+            )}
+          </div>
           
-          {/* Time slots grid */}
-          <TimeSlotGrid 
-            availableSlots={availabilityData?.data.availability || []} 
-            onSelectTimeSlot={handleSelectTimeSlot}
-            isLoading={isLoading}
-          />
+          <div className="p-8">
+            {/* Date selector */}
+            <DateSelector 
+              selectedDate={selectedDate} 
+              onDateChange={handleDateChange} 
+            />
+            
+            {/* Time slots grid */}
+            <TimeSlotGrid 
+              availableSlots={availabilityData?.data.availability || []} 
+              onSelectTimeSlot={handleSelectTimeSlot}
+              isLoading={isLoading}
+            />
+          </div>
         </div>
       </div>
       

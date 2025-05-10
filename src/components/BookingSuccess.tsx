@@ -4,7 +4,7 @@ import { Booking } from '@/types/calendar';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { format } from 'date-fns';
-import { Calendar, CheckCircle, Clock, Video } from 'lucide-react';
+import { Calendar, CheckCircle, Clock, Video, ArrowRight } from 'lucide-react';
 
 interface BookingSuccessProps {
   isOpen: boolean;
@@ -33,14 +33,14 @@ const BookingSuccess: React.FC<BookingSuccessProps> = ({ isOpen, onClose, bookin
           
           <div>
             <h2 className="text-xl font-semibold text-gray-800">Booking confirmed</h2>
-            <p className="text-sm text-gray-500 mt-1">You're all set! The meeting has been added to your calendar.</p>
+            <p className="text-sm text-gray-500 mt-1">You're all set! The meeting has been scheduled.</p>
           </div>
           
-          <div className="w-full bg-gray-50 rounded-lg p-4 space-y-4">
+          <div className="w-full bg-gray-50 rounded-lg p-5 space-y-4 border border-gray-100">
             <div className="flex items-start">
-              <Calendar className="h-5 w-5 text-gray-600 mt-0.5 mr-3" />
+              <Calendar className="h-5 w-5 text-gray-600 mt-0.5 mr-3 flex-shrink-0" />
               <div className="text-left">
-                <p className="text-sm text-gray-500">Date</p>
+                <p className="text-xs text-gray-500 mb-0.5">Date</p>
                 <p className="font-medium text-gray-800">
                   {format(new Date(booking.date), 'EEEE, MMMM d, yyyy')}
                 </p>
@@ -48,9 +48,9 @@ const BookingSuccess: React.FC<BookingSuccessProps> = ({ isOpen, onClose, bookin
             </div>
             
             <div className="flex items-start">
-              <Clock className="h-5 w-5 text-gray-600 mt-0.5 mr-3" />
+              <Clock className="h-5 w-5 text-gray-600 mt-0.5 mr-3 flex-shrink-0" />
               <div className="text-left">
-                <p className="text-sm text-gray-500">Time</p>
+                <p className="text-xs text-gray-500 mb-0.5">Time</p>
                 <p className="font-medium text-gray-800">
                   {formatTime(booking.start_time)} ({booking.duration} minutes)
                 </p>
@@ -58,9 +58,9 @@ const BookingSuccess: React.FC<BookingSuccessProps> = ({ isOpen, onClose, bookin
             </div>
             
             <div className="flex items-start">
-              <Video className="h-5 w-5 text-gray-600 mt-0.5 mr-3" />
+              <Video className="h-5 w-5 text-gray-600 mt-0.5 mr-3 flex-shrink-0" />
               <div className="text-left">
-                <p className="text-sm text-gray-500">Meeting Platform</p>
+                <p className="text-xs text-gray-500 mb-0.5">Meeting Platform</p>
                 <p className="font-medium text-gray-800 capitalize">{booking.platform}</p>
                 
                 {booking.meeting_link && (
@@ -68,9 +68,10 @@ const BookingSuccess: React.FC<BookingSuccessProps> = ({ isOpen, onClose, bookin
                     href={booking.meeting_link} 
                     target="_blank" 
                     rel="noopener noreferrer"
-                    className="text-primary hover:underline text-sm mt-1 inline-block"
+                    className="text-primary hover:underline text-sm mt-1 inline-flex items-center"
                   >
                     Join {booking.platform} meeting
+                    <ArrowRight className="ml-1 h-3.5 w-3.5" />
                   </a>
                 )}
               </div>

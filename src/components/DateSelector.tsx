@@ -20,12 +20,12 @@ const DateSelector: React.FC<DateSelectorProps> = ({ selectedDate, onDateChange 
   const dateOptions = Array.from({ length: 7 }, (_, i) => addDays(today, i));
 
   return (
-    <div className="mb-10">
-      <div className="flex items-center justify-between mb-4">
+    <div className="mb-8 bg-white rounded-xl border border-gray-200 p-5 shadow-sm">
+      <div className="flex items-center justify-between mb-5">
         <h2 className="text-lg font-semibold text-gray-800">Select a date</h2>
         <Popover>
           <PopoverTrigger asChild>
-            <Button variant="outline" size="sm" className="ml-auto h-8 border-gray-200">
+            <Button variant="outline" size="sm" className="ml-auto h-9 border-gray-200">
               <CalendarIcon className="mr-2 h-4 w-4" />
               <span>Calendar</span>
             </Button>
@@ -42,7 +42,7 @@ const DateSelector: React.FC<DateSelectorProps> = ({ selectedDate, onDateChange 
         </Popover>
       </div>
 
-      <div className="grid grid-cols-7 gap-1.5 pb-1">
+      <div className="grid grid-cols-7 gap-1.5">
         {dateOptions.map((date) => {
           const isSelected = isSameDay(date, selectedDate);
           const isToday = isSameDay(date, today);
@@ -53,10 +53,10 @@ const DateSelector: React.FC<DateSelectorProps> = ({ selectedDate, onDateChange 
             <button
               key={date.toISOString()}
               onClick={() => onDateChange(date)}
-              className={`flex flex-col items-center rounded-lg py-3 hover:bg-gray-50 transition-colors ${
+              className={`flex flex-col items-center rounded-lg py-3 transition-all ${
                 isSelected
-                  ? 'bg-gray-50 border-2 border-primary text-primary font-semibold'
-                  : 'border border-gray-100'
+                  ? 'bg-primary/10 border-2 border-primary text-primary font-medium'
+                  : 'hover:bg-gray-50 border border-gray-100'
               }`}
             >
               <span className={`text-xs mb-1 ${isSelected ? 'text-primary' : 'text-gray-500'}`}>
