@@ -34,9 +34,8 @@ const UserCalendarPage: React.FC = () => {
     queryFn: () => fetchAvailability(username || '', format(selectedDate, 'yyyy-MM-dd')),
     enabled: !!username,
     retry: 1,
-    // Replace onError with onSettled for error handling
-    onSettled: (data, error) => {
-      if (error) {
+    meta: {
+      onError: (error: unknown) => {
         toast({
           title: "Error loading calendar",
           description: error instanceof Error ? error.message : "Failed to load availability",
@@ -117,6 +116,12 @@ const UserCalendarPage: React.FC = () => {
         </div>
       </div>
     );
+  }
+
+  // Setup error handling using the error from useQuery
+  if (error) {
+    // We'll display the error via toast, but we can still render the UI with proper error state
+    console.error("Error fetching availability:", error);
   }
 
   return (
