@@ -1,8 +1,8 @@
-
 import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { format } from 'date-fns';
 import { useQuery } from '@tanstack/react-query';
+import { Laptop, Moon, Sun, Sparkles, Bookmark, Clock, Calendar } from 'lucide-react';
 
 import UserHeader from '@/components/UserHeader';
 import DateSelector from '@/components/DateSelector';
@@ -13,6 +13,7 @@ import BookingSuccess from '@/components/BookingSuccess';
 import { fetchAvailability, bookTimeSlot } from '@/lib/api';
 import { TimeSlot, BookingFormInputs, Booking } from '@/types/calendar';
 import { useToast } from '@/components/ui/use-toast';
+import { cn } from '@/lib/utils';
 
 const UserCalendarPage: React.FC = () => {
   const { username } = useParams<{ username: string }>();
@@ -121,54 +122,86 @@ const UserCalendarPage: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-white to-gray-50 dark:from-gray-900 dark:to-gray-800">
-      <div className="container mx-auto max-w-4xl px-4 py-12">
-        {/* Modern Design Card */}
-        <div className="bg-white dark:bg-gray-800 rounded-3xl overflow-hidden shadow-xl border border-gray-100 dark:border-gray-700">
-          {/* Section 1: User Profile Header */}
-          <div className="relative overflow-hidden">
-            <div className="absolute inset-0 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 opacity-70"></div>
-            <div className="relative p-8 border-b border-gray-100 dark:border-gray-700">
-              {/* Profile header */}
-              {availabilityData && (
-                <UserHeader 
-                  user={availabilityData.data.user} 
-                  timezone={availabilityData.data.timezone} 
-                />
-              )}
-            </div>
+    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white dark:from-gray-950 dark:to-gray-900 flex flex-col">
+      {/* Top App Bar with branded feel */}
+      <header className="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 sticky top-0 z-10 backdrop-blur-sm bg-white/80 dark:bg-gray-900/80">
+        <div className="container mx-auto px-4 sm:px-6 py-3 flex justify-between items-center">
+          <div className="flex items-center space-x-2">
+            <Sparkles className="h-5 w-5 text-primary" />
+            <span className="font-bold text-lg bg-gradient-to-r from-primary to-blue-600 bg-clip-text text-transparent">BookingBlitz</span>
+          </div>
+          <div className="flex items-center space-x-3">
+            <Bookmark className="h-5 w-5 text-gray-500 dark:text-gray-400 cursor-pointer hover:text-primary transition-colors" />
+            <span className="hidden sm:flex items-center space-x-1 text-sm text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded">
+              <Laptop className="h-3.5 w-3.5" />
+              <span>App</span>
+            </span>
+          </div>
+        </div>
+      </header>
+      
+      {/* Main Content Area */}
+      <div className="flex-grow flex flex-col">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6 lg:py-8 max-w-7xl">
+          {/* Hero Section with User Profile */}
+          <div className="bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-gray-800 dark:to-gray-700 rounded-2xl p-8 mb-8 shadow-sm">
+            {availabilityData && (
+              <UserHeader 
+                user={availabilityData.data.user} 
+                timezone={availabilityData.data.timezone} 
+              />
+            )}
           </div>
           
-          {/* Section 2 & 3: Calendar and Time Slots */}
-          <div className="p-8 grid grid-cols-1 md:grid-cols-3 gap-8">
-            {/* Section 2: Calendar with Date Selector */}
-            <div className="md:col-span-1">
-              <h2 className="text-xl font-semibold mb-4 text-gray-800 dark:text-gray-100">Select Date</h2>
-              <DateSelector 
-                selectedDate={selectedDate} 
-                onDateChange={handleDateChange} 
-              />
+          {/* Calendar and Slots Section */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            {/* Calendar Column */}
+            <div className="lg:col-span-4">
+              <div className="sticky top-24">
+                <h2 className="text-xl font-semibold mb-4 text-gray-800 dark:text-gray-100 flex items-center">
+                  <Calendar className="mr-2 h-5 w-5 text-primary" />
+                  Select Date
+                </h2>
+                <DateSelector 
+                  selectedDate={selectedDate} 
+                  onDateChange={handleDateChange} 
+                />
+              </div>
             </div>
             
-            {/* Section 3: Time Slots Grid */}
-            <div className="md:col-span-2">
-              <h2 className="text-xl font-semibold mb-4 text-gray-800 dark:text-gray-100">Available Times</h2>
+            {/* Time Slots Column */}
+            <div className="lg:col-span-8">
+              <h2 className="text-xl font-semibold mb-4 text-gray-800 dark:text-gray-100 flex items-center">
+                <Clock className="mr-2 h-5 w-5 text-primary" />
+                Available Times
+              </h2>
               <TimeSlotGrid 
                 availableSlots={availabilityData?.data.availability || []} 
                 onSelectTimeSlot={handleSelectTimeSlot}
                 isLoading={isLoading}
               />
+              
+              {/* Booking Explanatory Text with enhanced design */}
+              <div className="mt-8 text-center px-4 py-4 bg-blue-50 dark:bg-gray-800 rounded-xl border border-blue-100 dark:border-gray-700">
+                <div className="inline-flex items-center px-3 py-1 bg-white dark:bg-gray-700 rounded-full shadow-sm mb-2">
+                  <span className="w-2 h-2 bg-green-400 rounded-full mr-2"></span>
+                  <p className="text-sm font-medium text-gray-700 dark:text-gray-300">Seamless Booking</p>
+                </div>
+                <p className="text-gray-600 dark:text-gray-400">
+                  Select an available time slot above to schedule your meeting with <span className="font-semibold text-primary">{username}</span>.
+                </p>
+              </div>
             </div>
           </div>
         </div>
-
-        {/* Booking explanatory text */}
-        <div className="mt-8 text-center px-4">
-          <p className="text-gray-600 dark:text-gray-400">
-            Select an available time slot to schedule your meeting with {username}.
-          </p>
-        </div>
       </div>
+      
+      {/* Footer with branding */}
+      <footer className="bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800 py-4 mt-auto">
+        <div className="container mx-auto px-4 sm:px-6 text-center text-sm text-gray-500 dark:text-gray-400">
+          Powered by <span className="font-medium text-primary">BookingBlitz</span> • Simple scheduling ahead
+        </div>
+      </footer>
       
       {/* Booking modal */}
       <BookingModal 
