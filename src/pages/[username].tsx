@@ -29,7 +29,7 @@ const UserCalendarPage: React.FC = () => {
   const [isSuccessOpen, setIsSuccessOpen] = useState<boolean>(false);
 
   // Fetch availability data with React Query
-  const { data: availabilityData, isLoading, error, refetch } = useQuery({
+  const { data: availabilityData, isLoading, error } = useQuery({
     queryKey: ['availability', username, format(selectedDate, 'yyyy-MM-dd')],
     queryFn: () => fetchAvailability(username || '', format(selectedDate, 'yyyy-MM-dd')),
     enabled: !!username,
@@ -88,9 +88,6 @@ const UserCalendarPage: React.FC = () => {
       if (response.success && response.data.bookings.length > 0) {
         setBookingResult(response.data.bookings[0]);
         setIsSuccessOpen(true);
-        
-        // Refresh availability after booking
-        refetch();
       }
     } catch (err) {
       toast({
@@ -120,7 +117,6 @@ const UserCalendarPage: React.FC = () => {
 
   // Setup error handling using the error from useQuery
   if (error) {
-    // We'll display the error via toast, but we can still render the UI with proper error state
     console.error("Error fetching availability:", error);
   }
 

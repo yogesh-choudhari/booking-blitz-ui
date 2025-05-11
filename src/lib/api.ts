@@ -11,6 +11,7 @@ export async function fetchAvailability(
   date: string
 ): Promise<AvailabilityResponse> {
   try {
+    console.log(`Fetching availability for ${username} on ${date}`);
     const response = await fetch(
       `${API_BASE_URL}/${username}/availability?date=${date}`
     );
@@ -26,7 +27,9 @@ export async function fetchAvailability(
       }
     }
     
-    return await response.json();
+    const data = await response.json();
+    console.log("Availability data received:", data);
+    return data;
   } catch (error) {
     console.error("Error fetching availability:", error);
     throw error;
@@ -41,6 +44,7 @@ export async function bookTimeSlot(
   bookingData: BookingRequest
 ): Promise<BookingResponse> {
   try {
+    console.log(`Booking timeslot for ${username}:`, bookingData);
     const response = await fetch(`${API_BASE_URL}/${username}/book/`, {
       method: "POST",
       headers: {
@@ -60,7 +64,9 @@ export async function bookTimeSlot(
       }
     }
     
-    return await response.json();
+    const data = await response.json();
+    console.log("Booking response:", data);
+    return data;
   } catch (error) {
     console.error("Error booking time slot:", error);
     throw error;
