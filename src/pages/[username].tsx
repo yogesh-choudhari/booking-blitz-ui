@@ -125,34 +125,52 @@ const UserCalendarPage: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      <div className="container mx-auto max-w-3xl px-4 py-12">
-        {/* Main content area with card-like design */}
-        <div className="bg-white dark:bg-gray-800 rounded-2xl overflow-hidden shadow-sm border border-gray-200 dark:border-gray-700">
-          <div className="p-8 border-b border-gray-100 dark:border-gray-700">
-            {/* Profile header */}
-            {availabilityData && (
-              <UserHeader 
-                user={availabilityData.data.user} 
-                timezone={availabilityData.data.timezone} 
-              />
-            )}
+    <div className="min-h-screen bg-gradient-to-b from-white to-gray-50 dark:from-gray-900 dark:to-gray-800">
+      <div className="container mx-auto max-w-4xl px-4 py-12">
+        {/* Modern Design Card */}
+        <div className="bg-white dark:bg-gray-800 rounded-3xl overflow-hidden shadow-xl border border-gray-100 dark:border-gray-700">
+          {/* Section 1: User Profile Header */}
+          <div className="relative overflow-hidden">
+            <div className="absolute inset-0 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 opacity-70"></div>
+            <div className="relative p-8 border-b border-gray-100 dark:border-gray-700">
+              {/* Profile header */}
+              {availabilityData && (
+                <UserHeader 
+                  user={availabilityData.data.user} 
+                  timezone={availabilityData.data.timezone} 
+                />
+              )}
+            </div>
           </div>
           
-          <div className="p-8">
-            {/* Date selector */}
-            <DateSelector 
-              selectedDate={selectedDate} 
-              onDateChange={handleDateChange} 
-            />
+          {/* Section 2 & 3: Calendar and Time Slots */}
+          <div className="p-8 grid grid-cols-1 md:grid-cols-3 gap-8">
+            {/* Section 2: Calendar with Date Selector */}
+            <div className="md:col-span-1">
+              <h2 className="text-xl font-semibold mb-4 text-gray-800 dark:text-gray-100">Select Date</h2>
+              <DateSelector 
+                selectedDate={selectedDate} 
+                onDateChange={handleDateChange} 
+              />
+            </div>
             
-            {/* Time slots grid */}
-            <TimeSlotGrid 
-              availableSlots={availabilityData?.data.availability || []} 
-              onSelectTimeSlot={handleSelectTimeSlot}
-              isLoading={isLoading}
-            />
+            {/* Section 3: Time Slots Grid */}
+            <div className="md:col-span-2">
+              <h2 className="text-xl font-semibold mb-4 text-gray-800 dark:text-gray-100">Available Times</h2>
+              <TimeSlotGrid 
+                availableSlots={availabilityData?.data.availability || []} 
+                onSelectTimeSlot={handleSelectTimeSlot}
+                isLoading={isLoading}
+              />
+            </div>
           </div>
+        </div>
+
+        {/* Booking explanatory text */}
+        <div className="mt-8 text-center px-4">
+          <p className="text-gray-600 dark:text-gray-400">
+            Select an available time slot to schedule your meeting with {username}.
+          </p>
         </div>
       </div>
       
@@ -165,7 +183,6 @@ const UserCalendarPage: React.FC = () => {
         isSubmitting={isSubmitting}
       />
       
-      {/* Success confirmation */}
       <BookingSuccess 
         isOpen={isSuccessOpen} 
         onClose={handleCloseSuccess} 
