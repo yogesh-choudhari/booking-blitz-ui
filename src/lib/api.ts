@@ -16,7 +16,14 @@ export async function fetchAvailability(
     );
     
     if (!response.ok) {
-      throw new Error(`Error ${response.status}: ${response.statusText}`);
+      // Check if content type is JSON before trying to parse
+      const contentType = response.headers.get("content-type");
+      if (contentType && contentType.includes("application/json")) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || `Error ${response.status}: ${response.statusText}`);
+      } else {
+        throw new Error(`Error ${response.status}: ${response.statusText}`);
+      }
     }
     
     return await response.json();
@@ -43,8 +50,14 @@ export async function bookTimeSlot(
     });
     
     if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.message || `Error ${response.status}: ${response.statusText}`);
+      // Check if content type is JSON before trying to parse
+      const contentType = response.headers.get("content-type");
+      if (contentType && contentType.includes("application/json")) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || `Error ${response.status}: ${response.statusText}`);
+      } else {
+        throw new Error(`Error ${response.status}: ${response.statusText}`);
+      }
     }
     
     return await response.json();

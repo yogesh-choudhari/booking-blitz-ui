@@ -1,7 +1,8 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { format } from 'date-fns';
+import { useQuery } from '@tanstack/react-query';
 
 import UserHeader from '@/components/UserHeader';
 import DateSelector from '@/components/DateSelector';
@@ -10,14 +11,13 @@ import BookingModal from '@/components/BookingModal';
 import BookingSuccess from '@/components/BookingSuccess';
 
 import { fetchAvailability, bookTimeSlot } from '@/lib/api';
-import { TimeSlot, BookingFormInputs, AvailabilityResponse, Booking } from '@/types/calendar';
+import { TimeSlot, BookingFormInputs, Booking } from '@/types/calendar';
+import { useToast } from '@/components/ui/use-toast';
 
 const UserCalendarPage: React.FC = () => {
   const { username } = useParams<{ username: string }>();
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
-  const [availabilityData, setAvailabilityData] = useState<AvailabilityResponse | null>(null);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
+  const { toast } = useToast();
   
   // Modal states
   const [selectedTimeSlot, setSelectedTimeSlot] = useState<TimeSlot | null>(null);
@@ -28,27 +28,20 @@ const UserCalendarPage: React.FC = () => {
   const [bookingResult, setBookingResult] = useState<Booking | null>(null);
   const [isSuccessOpen, setIsSuccessOpen] = useState<boolean>(false);
 
-  useEffect(() => {
-    const getAvailability = async () => {
-      if (!username) return;
-      
-      setIsLoading(true);
-      setError(null);
-      
-      try {
-        const formattedDate = format(selectedDate, 'yyyy-MM-dd');
-        const data = await fetchAvailability(username, formattedDate);
-        setAvailabilityData(data);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'Failed to load availability');
-        console.error('Error fetching availability:', err);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    getAvailability();
-  }, [username, selectedDate]);
+  // Fetch availability data with React Query
+  const { data: availabilityData, isLoading, error, refetch } = useQuery({
+    queryKey: ['availability', username, format(selectedDate, 'yyyy-MM-dd')],
+    queryFn: () => fetchAvailability(username || '', format(selectedDate, 'yyyy-MM-dd')),
+    enabled: !!username,
+    retry: 1,
+    onError: (err) => {
+      toast({
+        title: "Error loading calendar",
+        description: err instanceof Error ? err.message : "Failed to load availability",
+        variant: "destructive",
+      });
+    }
+  });
 
   const handleDateChange = (date: Date) => {
     setSelectedDate(date);
@@ -95,13 +88,14 @@ const UserCalendarPage: React.FC = () => {
         setIsSuccessOpen(true);
         
         // Refresh availability after booking
-        const formattedDate = format(selectedDate, 'yyyy-MM-dd');
-        const newAvailability = await fetchAvailability(username, formattedDate);
-        setAvailabilityData(newAvailability);
+        refetch();
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to book appointment');
-      console.error('Error booking appointment:', err);
+      toast({
+        title: "Booking failed",
+        description: err instanceof Error ? err.message : "Failed to book appointment",
+        variant: "destructive",
+      });
     } finally {
       setIsSubmitting(false);
     }
@@ -113,28 +107,23 @@ const UserCalendarPage: React.FC = () => {
 
   if (!username) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+      <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
         <div className="text-center">
-          <h1 className="text-2xl font-bold mb-2 text-gray-800">User not found</h1>
-          <p className="text-gray-500">Please check the URL and try again.</p>
+          <h1 className="text-2xl font-bold mb-2 text-gray-800 dark:text-gray-100">User not found</h1>
+          <p className="text-gray-500 dark:text-gray-400">Please check the URL and try again.</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       <div className="container mx-auto max-w-3xl px-4 py-12">
-        {/* Error display */}
-        {error ? (
-          <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-6">
-            {error}
-          </div>
-        ) : null}
+        {/* Error display is handled by toast now */}
         
         {/* Main content area with card-like design */}
-        <div className="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-200">
-          <div className="p-8 border-b border-gray-100">
+        <div className="bg-white dark:bg-gray-800 rounded-2xl overflow-hidden shadow-sm border border-gray-200 dark:border-gray-700">
+          <div className="p-8 border-b border-gray-100 dark:border-gray-700">
             {/* Profile header */}
             {availabilityData && (
               <UserHeader 
