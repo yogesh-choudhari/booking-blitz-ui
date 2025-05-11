@@ -34,12 +34,15 @@ const UserCalendarPage: React.FC = () => {
     queryFn: () => fetchAvailability(username || '', format(selectedDate, 'yyyy-MM-dd')),
     enabled: !!username,
     retry: 1,
-    onError: (err) => {
-      toast({
-        title: "Error loading calendar",
-        description: err instanceof Error ? err.message : "Failed to load availability",
-        variant: "destructive",
-      });
+    // Replace onError with onSettled for error handling
+    onSettled: (data, error) => {
+      if (error) {
+        toast({
+          title: "Error loading calendar",
+          description: error instanceof Error ? error.message : "Failed to load availability",
+          variant: "destructive",
+        });
+      }
     }
   });
 
@@ -119,8 +122,6 @@ const UserCalendarPage: React.FC = () => {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       <div className="container mx-auto max-w-3xl px-4 py-12">
-        {/* Error display is handled by toast now */}
-        
         {/* Main content area with card-like design */}
         <div className="bg-white dark:bg-gray-800 rounded-2xl overflow-hidden shadow-sm border border-gray-200 dark:border-gray-700">
           <div className="p-8 border-b border-gray-100 dark:border-gray-700">
